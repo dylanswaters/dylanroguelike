@@ -1,0 +1,20 @@
+#format: name, min, max
+#important scores
+hp,1,1000
+dodge,0,100
+carryWeight,0,1000
+sightRange,1,50
+#"attribute" scores
+strength,1,10
+endurance,1,10
+agility,1,10
+#skill scores
+unarmed,0,100
+knives,0,100
+clubs,0,100
+axes,0,100
+pistols,0,100
+rifles,0,100
+shotguns,0,100
+smgs,0,100
+grenade launchers,0,100

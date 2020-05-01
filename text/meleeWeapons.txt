@@ -1,0 +1,5 @@
+#name, weight, damageMin, damageMax, skill
+knife,1,1,3,knives
+baseball bat,4,2,5,clubs
+hatchet,3,2,4,axes
+knuckle duster,1,2,3,unarmed

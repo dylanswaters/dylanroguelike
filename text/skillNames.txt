@@ -1,0 +1,8 @@
+unarmed
+knives
+clubs
+axes
+pistols
+rifles
+shotguns
+smg
