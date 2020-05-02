@@ -13,7 +13,7 @@ def test1():
         return "test 1 failed: couldn't insert actor"
     print(newActor.getActorLocation)
     gameMap.moveActor(newActor, 1)
-
+    gameMap.moveActor(newActor, 1)
 
 
 def main():
