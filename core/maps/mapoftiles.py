@@ -6,62 +6,33 @@ import random
 class MapOfTiles(Map):
     tiles = []
 
-    def __init__(self, w, h, nr):
-        Map.__init__(self,w,h,nr)
-        roomList = []
-        roomList.append(Room(0,self.maxWidth,0,self.maxHeight,1.0))
-        for i in range(0, self.maxWidth):
+    def __init__(self, w, h):
+        Map.__init__(self,w,h)
+        for x in range(0, self.maxWidth):
             newTileList = []
-            for j in range(0, self.maxHeight):
+            for y in range(0, self.maxHeight):
                 newTile = Tile()
                 newTileList.append(newTile)
             self.tiles.append(newTileList)
-        if(nr > 0):
-            for i in range(1, nr):
-                largestRoomSize = 0
-                largestRoomNum = 0
-                for roomNum in range(0, len(roomList)):
-                    if roomList[roomNum].getSize() > largestRoomSize:
-                        largestRoomSize = roomList[roomNum].getSize()
-                        largestRoomNum = roomNum
-                # split vertically
-                # print(roomList[largestRoomNum])
-                if((roomList[largestRoomNum].getXMax() - roomList[largestRoomNum].getXMin()) >= (roomList[largestRoomNum].getYMax() - roomList[largestRoomNum].getYMin())):
-                    # print("dividing X axis")
-                    roomList[largestRoomNum].setPrevXMax(roomList[largestRoomNum].getXMax())
-                    roomList[largestRoomNum].setXMax(int((roomList[largestRoomNum].getXMax() - roomList[largestRoomNum].getXMin())/2) + roomList[largestRoomNum].getXMin())
-                    roomList[largestRoomNum].setSize(roomList[largestRoomNum].getSize() / 2)
-                    roomList.append(Room(roomList[largestRoomNum].getXMax()+1, roomList[largestRoomNum].getPrevXMax(), roomList[largestRoomNum].getYMin(), roomList[largestRoomNum].getYMax(), roomList[largestRoomNum].getSize()))
-                # split horizontally
-                else:
-                    # print("dividing Y axis")
-                    roomList[largestRoomNum].setPrevYMax(roomList[largestRoomNum].getYMax())
-                    roomList[largestRoomNum].setYMax(int((roomList[largestRoomNum].getYMax() - roomList[largestRoomNum].getYMin())/2) + roomList[largestRoomNum].getYMin())
-                    roomList[largestRoomNum].setSize(roomList[largestRoomNum].getSize() / 2)
-                    roomList.append(Room(roomList[largestRoomNum].getXMin(), roomList[largestRoomNum].getXMax(), roomList[largestRoomNum].getYMax() + 1, roomList[largestRoomNum].getPrevYMax(), roomList[largestRoomNum].getSize()))
 
-            for room in roomList:
-                # print(room)
-                # print("center of room X:" + str(room.getCenterX()) + "Y:" + str(room.getCenterY()))
-                yMinBound = random.randint(room.getYMin(),room.getCenterY())-1
-                yMaxBound = random.randint(room.getCenterY()+2,room.getYMax())
-                # print("Y room size:" + str(yMinBound) + "-" + str(yMaxBound))
-                xMinBound = random.randint(room.getXMin(), room.getCenterX())-1
-                xMaxBound = random.randint(room.getCenterX()+2,room.getXMax())
-                # print("X room size:" + str(xMinBound) + "-" + str(xMaxBound))
-                for i in range(yMinBound, yMaxBound):
-                    self.tiles[xMaxBound-1][i].setToken("#")
-                    self.tiles[xMaxBound-1][i].setBlocked(True)
-                    self.tiles[xMinBound][i].setToken("#")
-                    self.tiles[xMinBound][i].setBlocked(True)
-                for j in range(xMinBound, xMaxBound):
-                    self.tiles[j][yMaxBound-1].setToken("#")
-                    self.tiles[j][yMaxBound-1].setBlocked(True)
-                    self.tiles[j][yMinBound].setToken("#")
-                    self.tiles[j][yMinBound].setBlocked(True)
+
+    def printMap(self):
+        mapLine = "\n"
+        for y in range(0, self.getHeight()):
+            for x in range(0, self.getWidth()):
+                if(self.getTile(x,y).getActor() != None):
+                    mapLine += self.getTile(x,y).getActor().getToken()
+                else:
+                    mapLine += self.getTile(x,y).getToken()
+            mapLine += "\n"
+        return mapLine
+
+    def blockEdges(self):
         for i in range(0, self.maxHeight):
             # print(self.maxWidth-2)
             # print(i)
+            print(self.maxWidth-1)
+            print(i)
             self.getTile(self.maxWidth-1,i).setToken("#")
             self.getTile(self.maxWidth-1,i).setBlocked(True)
             self.getTile(0,i).setToken("#")
@@ -72,7 +43,62 @@ class MapOfTiles(Map):
             self.getTile(i,0).setToken("#")
             self.getTile(i,0).setBlocked(True)
 
+
+    def makeRooms(self,nr):
+        if(nr == 0):
+            return
+        roomList = []
+        # master room
+        roomList.append(Room(0,self.maxWidth,0,self.maxHeight,1.0))
+        # this splits the room zones up
+        for i in range(1, nr):
+            largestRoomSize = 0
+            largestRoomNum = 0
+            for roomNum in range(0, len(roomList)):
+                if roomList[roomNum].getSize() > largestRoomSize:
+                    largestRoomSize = roomList[roomNum].getSize()
+                    largestRoomNum = roomNum
+            # split vertically
+            # print(roomList[largestRoomNum])
+            if((roomList[largestRoomNum].getXMax() - roomList[largestRoomNum].getXMin()) >= (roomList[largestRoomNum].getYMax() - roomList[largestRoomNum].getYMin())):
+                # print("dividing X axis")
+                roomList[largestRoomNum].setPrevXMax(roomList[largestRoomNum].getXMax())
+                roomList[largestRoomNum].setXMax(int((roomList[largestRoomNum].getXMax() - roomList[largestRoomNum].getXMin())/2) + roomList[largestRoomNum].getXMin())
+                roomList[largestRoomNum].setSize(roomList[largestRoomNum].getSize() / 2)
+                roomList.append(Room(roomList[largestRoomNum].getXMax()+1, roomList[largestRoomNum].getPrevXMax(), roomList[largestRoomNum].getYMin(), roomList[largestRoomNum].getYMax(), roomList[largestRoomNum].getSize()))
+            # split horizontally
+            else:
+                # print("dividing Y axis")
+                roomList[largestRoomNum].setPrevYMax(roomList[largestRoomNum].getYMax())
+                roomList[largestRoomNum].setYMax(int((roomList[largestRoomNum].getYMax() - roomList[largestRoomNum].getYMin())/2) + roomList[largestRoomNum].getYMin())
+                roomList[largestRoomNum].setSize(roomList[largestRoomNum].getSize() / 2)
+                roomList.append(Room(roomList[largestRoomNum].getXMin(), roomList[largestRoomNum].getXMax(), roomList[largestRoomNum].getYMax() + 1, roomList[largestRoomNum].getPrevYMax(), roomList[largestRoomNum].getSize()))
+        # picks random room sizes and draws walls
+        for room in roomList:
+            # print(room)
+            # print("center of room X:" + str(room.getCenterX()) + "Y:" + str(room.getCenterY()))
+            yMinBound = random.randint(room.getYMin(),room.getCenterY())-1
+            yMaxBound = random.randint(room.getCenterY()+2,room.getYMax())
+            # print("Y room size:" + str(yMinBound) + "-" + str(yMaxBound))
+            xMinBound = random.randint(room.getXMin(), room.getCenterX())-1
+            xMaxBound = random.randint(room.getCenterX()+2,room.getXMax())
+            # print("X room size:" + str(xMinBound) + "-" + str(xMaxBound))
+            for i in range(yMinBound, yMaxBound):
+                self.tiles[xMaxBound-1][i].setToken("#")
+                self.tiles[xMaxBound-1][i].setBlocked(True)
+                self.tiles[xMinBound][i].setToken("#")
+                self.tiles[xMinBound][i].setBlocked(True)
+            for j in range(xMinBound, xMaxBound):
+                self.tiles[j][yMaxBound-1].setToken("#")
+                self.tiles[j][yMaxBound-1].setBlocked(True)
+                self.tiles[j][yMinBound].setToken("#")
+                self.tiles[j][yMinBound].setBlocked(True)
+
+
     def getTile(self,x,y):
+        # for i in range(0, self.getHeight()):
+        #     for j in range(0, self.getWidth()):
+        #         print(self.tiles[i][j])
         # print(x)
         # print(y)
         return self.tiles[x][y]
@@ -162,6 +188,7 @@ class MapOfTiles(Map):
         xDist = abs(xy2[1] - xy1[1])
         return [yDist, xDist]
 
+    # needs a rewrite
     def getVisibleActors(self, actorLooking, sightDistance):
         listOfActorsFound = []
         xypair = self.getActorLocation(actorLooking)
@@ -169,21 +196,20 @@ class MapOfTiles(Map):
         actory = xypair[1]
         for x in range(actorx - sightDistance, actorx + sightDistance):
             for y in range(actory - sightDistance, actory + sightDistance):
-                # print("maxX:" + str(self.maxWidth) + " maxY:" + str(self.maxHeight))
-                # print("X:" + str(x) + " Y:" + str(y))
+                # out of bounds check
+                # print(str(x) + "," + str(y))
                 if(x < 0 or x > self.maxWidth - 1 or y < 0 or y > self.maxHeight - 1):
-                    pass
-                    # print("skipped")
+                    continue
+                # we found a actor in range
                 elif(self.getTile(x,y).getActor() != None):
                     foundActor = self.getTile(x,y).getActor()
-                    # we found a actor in range
+                    # print(foundActor)
                     # check to make sure it isn't the player
-                    if(actorLooking.getID() == foundActor.getID()):
-                        break
-                    # print("actor in range: " + str(foundActor.getID()) + "[" + str(y) + "," + str(x) + "]")
-
+                    if(actorLooking == foundActor):
+                        continue
                     # find distance between two actors
                     distPair = self.getDistanceTo(actorLooking, foundActor)
+
                     # print(distPair)
                     xStepAmount = 0
                     yStepAmount = 0
@@ -242,7 +268,7 @@ class MapOfTiles(Map):
                             xStepCounter = 0
                         if(yStepCounter >= yStepAt):
                             yStepCounter = 0
-                        # self.getTile(checky, checkx).setToken("x")
+                        # self.getTile(checky, checkx).setToken(actorLooking.getToken())
                         if(self.getTile(checkx, checky).getBlocked() == True):
                             if(self.getTile(checkx, checky).getActor() != foundActor):
                                 # print(str(checky) + "," + str(checkx) + " is blocked")
@@ -257,6 +283,7 @@ class MapOfTiles(Map):
             for y in range(0, self.maxHeight):
                 if(self.getTile(x,y).getActor() == actorToFind):
                     return [x,y]
+        return -1
 
     # returns the closest actor in a list compared to a base
     def getClosestActor(self, baseActor, listOfActors):
@@ -277,8 +304,8 @@ class MapOfTiles(Map):
     def moveActor(self, movingActor, direction):
         # print("moving " + str(movingActor) + " in direction " + str(direction))
         xy = self.getActorLocation(movingActor)
+        # print(xy)
         tileOfMovingActor = self.getTile(xy[0],xy[1])
-        canMove = False
         newX = 0
         newY = 0
         # like keypad (5 is actor loc)
@@ -287,41 +314,42 @@ class MapOfTiles(Map):
         # 1 2 3
         # down and left
         if(direction == 1):
-            newY = xy[0]+1
-            newX = xy[1]-1
+            newX = xy[0]-1
+            newY = xy[1]+1
         # down
         if(direction == 2):
-            newY = xy[0]+1
-            newX = xy[1]
+            newX = xy[0]
+            newY = xy[1]+1
         # down and right
         if(direction == 3):
-            newY = xy[0]+1
-            newX = xy[1]+1
+            newX = xy[0]+1
+            newY = xy[1]+1
         # left
         if(direction == 4):
-            newY = xy[0]
-            newX = xy[1]-1
+            newX = xy[0]-1
+            newY = xy[1]
         # not moving always results in a sucessful move, and no more work needs to be done
         if(direction == 5):
             return 1
         # right
         if(direction == 6):
-            newY = xy[0]
-            newX = xy[1]+1
+            newX = xy[0]+1
+            newY = xy[1]
         # up and left
         if(direction == 7):
-            newY = xy[0]-1
-            newX = xy[1]-1
+            newX = xy[0]-1
+            newY = xy[1]-1
         # up
         if(direction == 8):
-            newY = xy[0]-1
-            newX = xy[1]
+            newX = xy[0]
+            newY = xy[1]-1
         # up and right
         if(direction == 9):
-            newY = xy[0]-1
-            newX = xy[1]+1
-        if((newY < self.getHeight()-1 and newY > 0) and (newX < self.getWidth()-1 and newX > 0)):
-            newTile = self.getTile(newY, newX)
+            newX = xy[0]+1
+            newY = xy[1]-1
+        if((newY < self.getHeight() and newY > 0) and (newX < self.getWidth() and newX > 0)):
+            # print(str(newX) + "," + str(newY))
+            newTile = self.getTile(newX, newY)
             # print(newTile.getBlocked())
             if(newTile.getBlocked() == False):
                 newTile.setActor(tileOfMovingActor.getActor())
@@ -333,3 +361,9 @@ class MapOfTiles(Map):
                 return 0
         else:
             return 0
+
+    def removeAllActors(self):
+        for x in range(0, self.maxWidth):
+            for y in range(0, self.maxHeight):
+                if(self.getTile(x,y).getActor() != None):
+                    self.removeActor( self.getTile(x,y).getActor() )

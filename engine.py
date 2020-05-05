@@ -59,7 +59,9 @@ def main():
     gameLength = 30
     gameHeight = 15
     gameRooms = 1
-    gameMap = MapOfTiles(gameLength, gameHeight, gameRooms)
+    gameMap = MapOfTiles(gameLength, gameHeight)
+    gameMap.makeRooms(gameRooms)
+    gameMap.blockEdges()
     actorList = []
 
     weaponList = []
@@ -156,7 +158,7 @@ def main():
     Label(master, font=("Courier",12), textvariable=mapStr, height=gameHeight, width=gameLength, wraplength=0, justify=CENTER).pack(side="left")
     Label(master, font=("Courier",12), height=gameHeight, justify=LEFT, width=50, wraplength=500, textvariable=messagesOut).pack(side="left")
 
-    mapStr.set(printMap(gameMap))
+    mapStr.set(gameMap.printMap())
     turnNum = 0
     # while(1):
     while(inputBuffer != "q"):
@@ -219,13 +221,13 @@ def main():
                                 actorList.remove(attackChoice)
                                 messagesOut.set(messagesOut.get() + "\n" + str(attackChoice) + " has been slain by " + str(currActor))
                     else:
-                        print("actor " + str(currActor.getID()) + " moves to " + str(attackChoice) + " in direction " + str(gameMap.getDirectionToActor(currActor, attackChoice)))
+                        # print("actor " + str(currActor.getID()) + " moves to " + str(attackChoice) + " in direction " + str(gameMap.getDirectionToActor(currActor, attackChoice)))
                         gameMap.moveActor(currActor,gameMap.getDirectionToActor(currActor, attackChoice))
             else:
                 randDir = random.randint(1,9)
                 # print("actor " + str(currActor) + " wanders in direction " + str(randDir))
                 gameMap.moveActor(currActor,randDir)
-        mapStr.set(printMap(gameMap))
+        mapStr.set(gameMap.printMap())
         master.update_idletasks()
         master.update()
         inputBuffer = input()
