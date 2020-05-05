@@ -43,7 +43,7 @@ class MapOfTiles(Map):
             self.getTile(i,0).setToken("#")
             self.getTile(i,0).setBlocked(True)
 
-
+    # divides and conquers map to make rooms
     def makeRooms(self,nr):
         if(nr == 0):
             return
