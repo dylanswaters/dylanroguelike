@@ -28,3 +28,24 @@ class Tile:
 
     def __str__(self):
         return self.token
+
+class TileLink(Tile):
+    link = None
+
+    def __init__(self):
+        Tile.__init__(self)
+        self.link = None
+
+    def getLink(self):
+        return self.link
+
+    def setLink(self, link):
+        self.link = link
+
+    def sendToLink(self):
+        if(self.link.getActor() != None):
+            return 0
+        self.link.setActor(self.actorInTile)
+        self.link.setBlocked(True)
+        self.setActor(None)
+        self.setBlocked(False)

@@ -1,16 +1,18 @@
 from core.actors.inventory import *
 from core.actors.attribute import *
 import random
+import csv
 
 actorID = 0
 
 class Actor:
     id = 0
     name =  ""
-    sex = ""
     token = ""
-    charClass = ""
     inventory = Inventory()
+
+    # incorporate this into stats
+    sex = ""
 
     stats = []
     # hp = None
@@ -31,14 +33,10 @@ class Actor:
         self.stats = []
         actorID += 1
 
-        statsFile = open(statsFile,'r')
-        for line in statsFile:
-            if(line.startswith("#")):
-                pass
-            else:
-                line = line.replace("\n", "")
-                line = line.split(",")
-                self.stats.append(Attribute(line[0],int(line[1]),int(line[2]),int(line[1])))
+        statsDicts = csv.DictReader(open(statsFile))
+
+        for s in statsDicts:
+            self.stats.append(Attribute(s))
 
     def __str__(self):
         retStr = "actor has id:" + str(self.id) + ", who is named " + str(self.name) + " and is a " + str(self.sex)
@@ -47,6 +45,7 @@ class Actor:
     def printStats(self):
         for stat in self.stats:
             print(stat)
+            # print(stat.getName() + str(stat.getValue()))
 
     def getID(self):
         return self.id
@@ -56,7 +55,7 @@ class Actor:
 
     def makeAllStatsRandom(self):
         for stat in self.stats:
-            stat.incrementBaseScore(random.randint(stat.getMin(), stat.getMax()))
+            stat.setStat(random.randint(int(stat.min()), int(stat.max())))
 
     def setName(self,newName):
         self.name = newName
@@ -128,3 +127,12 @@ class Actor:
                 return stat
         else:
             return None
+
+    def setAttribute(self, attrName, value):
+        # self.stats[attrName].setStat(value)
+        for stat in self.stats:
+            # print(stat)
+            if(stat.getName() == attrName):
+                stat.setStat(value)
+                return 1
+        return 0

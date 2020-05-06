@@ -1,5 +1,0 @@
-#name, weight, damageMin, damageMax, skill, type, range, ammoCapacity, ammoType, ammoConsumption
-revolver,2,3,6,pistols,ranged,10,6,pistol-ammo,1
-AK-47,5,4,7,rifles,ranged,15,30,rifle-ammo,3
-sawed-off shotgun,3,1,6,shotguns,ranged,5,2,shotgun-ammo,1
-light SMG,3,2,4,smgs,ranged,15,20,smg-ammo,4

@@ -1,2 +1,0 @@
-#name, weight, damageMin, damageMax, skill, type, range, ammoCapacity, ammoType, ammoConsumption, splashRadius
-standard grenade launcher,7,8,14,grenade launchers,explosive,8,4,grenade-ammo,1,1

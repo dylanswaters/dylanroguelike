@@ -1,7 +1,5 @@
 from core.maps.mapoftiles import *
 from core.actors.actor import *
-from core.items.meleeWeapon import *
-from core.items.rangedWeapon import *
 import random
 from tkinter import *
 
@@ -61,11 +59,7 @@ def test3():
     gameMap = MapOfTiles(5, 5)
     newActor = Actor("test","male","@","text/empty.txt")
     gameMap.insertActor(2, 2, newActor)
-    print(gameMap.getActorLocation(newActor))
-    print(gameMap.printMap())
     gameMap.moveActor(newActor, 1)
-    print(gameMap.printMap())
-    print(gameMap.getActorLocation(newActor))
     if(gameMap.getActorLocation(newActor) != [1,3]):
         return "test 3 failed: actor did not move SW correctly"
     gameMap.moveActor(newActor, 9)
@@ -89,13 +83,24 @@ def test3():
     gameMap.moveActor(newActor, 6)
     if(gameMap.getActorLocation(newActor) != [2,2]):
         return "test 3 failed: actor did not move E correctly"
+    gameMap.removeAllActors()
+    del gameMap
     return "test 3 complete"
+
+def test4():
+    gameMap = MapOfTiles(5, 5)
+    newActor = Actor("test","male","@","text/empty.txt")
+    gameMap.insertActor(2, 2, newActor)
+    newActor2 = Actor("test","male","@","text/empty.txt")
+    gameMap.insertActor(2, 4, newActor2)
+    gameMap.getVisibleActors(newActor, 5)
 
 
 def main():
     print(test1())
     print(test2())
     print(test3())
+    # print(test4())
 
 if __name__ == '__main__':
     main()

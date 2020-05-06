@@ -1,36 +1,34 @@
+import csv
 itemIDCounter = 0
 
+# returns list of items
+def createItemsFromCSV(csvFile, itemType):
+    itemList = []
+    itemDicts = csv.DictReader(open(csvFile))
+
+    for item in itemDicts:
+        item["itemType"] = itemType
+        itemList.append(Item(item))
+
+    return itemList
+
+
 class Item:
-    name = ""
-    itemType = ""
-    id = 0
-    weight = 0
+    stats = {}
 
-    def __init__(self, name, itemType, weight):
+    def __init__(self, dictToCopy):
         global itemIDCounter
-        self.name = name
-        self.itemType = itemType
-        self.weight = weight
-        self.id = itemIDCounter
+        # we want to make a copy of the dict
+        self.stats = dict(dictToCopy)
+        self.stats["ID"] = itemIDCounter
         itemIDCounter += 1
+        if("itemType" not in self.stats):
+            self.stats["itemType"] = "Misc Item"
+        if("weight" not in self.stats):
+            self.stats["weight"] = 0
 
-    def getName(self):
-        return self.name
+    def getStat(self, name):
+        return self.stats[name]
 
-    def setName(self,name):
-        self.name = name
-
-    def getItemType(self):
-        return self.itemType
-
-    def setItemType(self,newItemType):
-        self.itemType = newItemType
-
-    def getID(self):
-        return
-
-    def getWeight(self):
-        return self.weight
-
-    def setWeight(self, weight):
-        self.weight = weight
+    def setStat(self, name, newValue):
+        self.stats[name] = newValue

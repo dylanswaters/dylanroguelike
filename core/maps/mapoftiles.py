@@ -31,8 +31,8 @@ class MapOfTiles(Map):
         for i in range(0, self.maxHeight):
             # print(self.maxWidth-2)
             # print(i)
-            print(self.maxWidth-1)
-            print(i)
+            # print(self.maxWidth-1)
+            # print(i)
             self.getTile(self.maxWidth-1,i).setToken("#")
             self.getTile(self.maxWidth-1,i).setBlocked(True)
             self.getTile(0,i).setToken("#")
@@ -123,21 +123,21 @@ class MapOfTiles(Map):
         xyt = self.getActorLocation(targetActor)
         # print("base actor " + str(xyb))
         # print("target actor " + str(xyt))
-        if(xyb[0] < xyt[0] and xyb[1] > xyt[1]):
+        if(xyb[0] > xyt[0] and xyb[1] < xyt[1]):
             return 1
-        if(xyb[0] < xyt[0] and xyb[1] == xyt[1]):
+        if(xyb[0] == xyt[0] and xyb[1] < xyt[1]):
             return 2
         if(xyb[0] < xyt[0] and xyb[1] < xyt[1]):
             return 3
-        if(xyb[0] == xyt[0] and xyb[1] > xyt[1]):
+        if(xyb[0] > xyt[0] and xyb[1] == xyt[1]):
             return 4
-        if(xyb[0] == xyt[0] and xyb[1] < xyt[1]):
+        if(xyb[0] < xyt[0] and xyb[1] == xyt[1]):
             return 6
         if(xyb[0] > xyt[0] and xyb[1] > xyt[1]):
             return 7
-        if(xyb[0] > xyt[0] and xyb[1] == xyt[1]):
+        if(xyb[0] == xyt[0] and xyb[1] > xyt[1]):
             return 8
-        if(xyb[0] > xyt[0] and xyb[1] < xyt[1]):
+        if(xyb[0] < xyt[0] and xyb[1] > xyt[1]):
             return 9
 
     def isActorAdjacentToTile(self, py, px, target):
@@ -145,7 +145,7 @@ class MapOfTiles(Map):
         for y in range(py - 1, py + 1):
             for x in range(px-1, px + 1):
                 if(x < 0 or x > self.maxWidth - 1 or y < 0 or y > self.maxHeight - 1):
-                    pass
+                    continue
                 elif(self.getTile(x,y).getActor() != None):
                     if(self.getTile(x,y).getActor().getID() == target.getID()):
                         retVal = True
@@ -184,99 +184,95 @@ class MapOfTiles(Map):
     def getDistanceTo(self, initActor, toActor):
         xy1 = self.getActorLocation(initActor)
         xy2 = self.getActorLocation(toActor)
-        yDist = abs(xy2[0] - xy1[0])
-        xDist = abs(xy2[1] - xy1[1])
-        return [yDist, xDist]
+        xDist = xy2[0] - xy1[0]
+        yDist = xy2[1] - xy1[1]
+        return [xDist, yDist]
 
-    # needs a rewrite
     def getVisibleActors(self, actorLooking, sightDistance):
-        listOfActorsFound = []
-        xypair = self.getActorLocation(actorLooking)
-        actorx = xypair[0]
-        actory = xypair[1]
+        returnActors = []
+        actorx, actory = self.getActorLocation(actorLooking)
+
+        actorsInRange = []
+        actorsxy = []
+
         for x in range(actorx - sightDistance, actorx + sightDistance):
             for y in range(actory - sightDistance, actory + sightDistance):
-                # out of bounds check
-                # print(str(x) + "," + str(y))
+                # oob check
                 if(x < 0 or x > self.maxWidth - 1 or y < 0 or y > self.maxHeight - 1):
                     continue
-                # we found a actor in range
                 elif(self.getTile(x,y).getActor() != None):
                     foundActor = self.getTile(x,y).getActor()
-                    # print(foundActor)
                     # check to make sure it isn't the player
                     if(actorLooking == foundActor):
                         continue
-                    # find distance between two actors
-                    distPair = self.getDistanceTo(actorLooking, foundActor)
+                    else:
+                        actorsInRange.append(foundActor)
+                        actorsxy.append([x,y])
+        for a in range(len(actorsInRange)):
+            stepx = 0.0
+            stepy = 0.0
+            d = self.getDistanceTo(actorsInRange[a],actorLooking)
+            # print("distance: ")
+            # print(d)
+            # print(":::")
+            if(abs(d[0]) > abs(d[1])):
+                # print("x is greater")
+                if(d[0] > 0):
+                    stepx = 1.0
+                elif(d[0] < 0):
+                    stepx = -1.0
+                else:
+                    stepx = 0.0
+                stepy = d[1]/abs(d[0])
+            elif(abs(d[0]) < abs(d[1])):
+                # print("y is greater")
+                stepx = d[0]/abs(d[1])
+                if(d[1] > 0):
+                    stepy = 1.0
+                elif(d[1] < 0):
+                    stepy = -1.0
+                else:
+                    stepy = 0.0
+            else:
+                # print("x and y are equal")
+                if(d[0] > 0):
+                    stepx = 1.0
+                elif(d[0] < 0):
+                    stepx = -1.0
+                else:
+                    stepx = 0.0
+                if(d[1] > 0):
+                    stepy = 1.0
+                elif(d[1] < 0):
+                    stepy = -1.0
+                else:
+                    stepy = 0.0
+            lookingAt = [actorsxy[a][0], actorsxy[a][1]]
+            # print("starting at")
+            # print(lookingAt)
+            # print("looking for")
+            # print([actorx, actory])
+            # print("in step sizes")
+            # print([stepx, stepy])
+            while(1): #while the tile isnt blocked keep going
+                # update lookingAt
+                lookingAt[0] += stepx
+                lookingAt[1] += stepy
+                # print("[" + str(int(lookingAt[0])) + ", " + str(int(lookingAt[1])) + "]")
+                # check for being at the actor
+                if( [round(lookingAt[0]), round(lookingAt[1])] == [actorx, actory]):
+                    # print("found")
+                    returnActors.append(actorsInRange[a])
+                    break
+                # check for blocked
+                else:
+                    if(self.getTile(round(lookingAt[0]), round(lookingAt[1])).getBlocked() == True):
+                        # print("blocked at: [" + str(int(lookingAt[0])) + ", " + str(int(lookingAt[1])) + "]")
+                        break
+                    else:
+                        continue
+        return returnActors
 
-                    # print(distPair)
-                    xStepAmount = 0
-                    yStepAmount = 0
-                    xStepAt = 0
-                    yStepAt = 0
-                    xStepCounter = 0
-                    yStepCounter = 0
-                    if(distPair[0] != 0 and distPair[1] != 0):
-                        if(distPair[0] > distPair[1]):
-                            xStepAt = int(round(distPair[0]/distPair[1] + 0.01))
-                        elif(distPair[0] < distPair[1]):
-                            yStepAt = int(round(distPair[1]/distPair[0] + 0.01))
-                    # print("xStepAt: " + str(xStepAt))
-                    # print("yStepAt: " + str(yStepAt))
-
-                    # figure out the stepAmount
-                    if(actory < y and actorx < x):
-                            yStepAmount += 1
-                            xStepAmount += 1
-                    elif(actory < y and actorx > x):
-                            yStepAmount += 1
-                            xStepAmount -= 1
-                    elif(actory > y and actorx > x):
-                            yStepAmount -= 1
-                            xStepAmount -= 1
-                    elif(actory > y and actorx < x):
-                            yStepAmount -= 1
-                            xStepAmount += 1
-                    elif(actory == y and actorx > x):
-                        xStepAmount -= 1
-                    elif(actory == y and actorx < x):
-                        xStepAmount += 1
-                    elif(actory < y and actorx == x):
-                        yStepAmount += 1
-                    elif(actory > y and actorx == x):
-                        yStepAmount -= 1
-
-                    checky = actory
-                    checkx = actorx
-                    canSee = True
-                    while(1):
-                        if(checkx == x and checky == y):
-                            break
-                        # "close enough" check
-                        if((checkx == x+1 and checky == y) or (checkx == x-1 and checky == y) or (checky == y+1 and checkx == x) or (checky == y-1 and checkx == x)):
-                            break
-                        if(xStepCounter == 0):
-                            checkx += xStepAmount
-                            xStepCounter = 0
-                        if(yStepCounter == 0):
-                            checky += yStepAmount
-                            yStepCounter = 0
-                        xStepCounter += 1
-                        yStepCounter += 1
-                        if(xStepCounter >= xStepAt):
-                            xStepCounter = 0
-                        if(yStepCounter >= yStepAt):
-                            yStepCounter = 0
-                        # self.getTile(checky, checkx).setToken(actorLooking.getToken())
-                        if(self.getTile(checkx, checky).getBlocked() == True):
-                            if(self.getTile(checkx, checky).getActor() != foundActor):
-                                # print(str(checky) + "," + str(checkx) + " is blocked")
-                                canSee = False
-                                break
-                    if(canSee == True):
-                        listOfActorsFound.append(self.getTile(x,y).getActor())
-        return listOfActorsFound
 
     def getActorLocation(self, actorToFind):
         for x in range(0, self.maxWidth):
