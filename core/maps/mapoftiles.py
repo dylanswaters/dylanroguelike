@@ -15,6 +15,18 @@ class MapOfTiles(Map):
                 newTileList.append(newTile)
             self.tiles.append(newTileList)
 
+    # takes two points, creates a grid out of it like printmap
+    def printSection(self, start, end):
+        mapLine = "\n"
+        for y in range(start[1], end[1]):
+            for x in range(start[0], end[0]):
+                if(self.getTile(x,y).getActor() != None):
+                    mapLine += self.getTile(x,y).getActor().getToken()
+                else:
+                    mapLine += self.getTile(x,y).getToken()
+            mapLine += "\n"
+        return mapLine
+
 
     def printMap(self):
         mapLine = "\n"

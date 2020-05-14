@@ -11,20 +11,20 @@ def attackActor(attacker,target):
         hitChance = (random.randint(90,100) + int(attacker.getAttribute("unarmed").getValue() * 0.75)) - target.getAttribute("dodge").getValue()
     else:
         hitChance = (random.randint(90,100) + int(attacker.getAttribute(attacker.weaponSlot.getStat("skill")).getValue() * 0.75)) - target.getAttribute("dodge").getValue()
-        print(attacker.weaponSlot.getStat("name") + " " + str(hitChance))
+        # print(attacker.weaponSlot.getStat("name") + " " + str(hitChance))
     if(hitChance >= 100):
         if(attacker.weaponSlot == None):
-            print("no wep damage calc")
+            # print("no wep damage calc")
             damage = (int(attacker.getAttribute("strength").getValue()) * int(attacker.getAttribute("unarmed").getValue() / 10))
         elif(attacker.weaponSlot.getStat("itemType") == "meleeWeapon"):
-            print("melee damage calc")
+            # print("melee damage calc")
             damage = (int(random.randint(int(attacker.weaponSlot.getStat("damageMin")), int(attacker.weaponSlot.getStat("damageMax"))))) * int(attacker.getAttribute(attacker.weaponSlot.getStat("skill")).getValue() / 10) + int(attacker.getAttribute("strength").getValue())
         elif(attacker.weaponSlot.getStat("itemType") == "rangedWeapon"):
-            print("gun dmg calc")
+            # print("gun dmg calc")
             damage = (random.randint(int(attacker.weaponSlot.getStat("damageMin")), int(attacker.weaponSlot.getStat("damageMax"))) * int(attacker.getAttribute(attacker.weaponSlot.getStat("skill")).getValue() / 10)) + int(attacker.getAttribute("agility").getValue())
         # target.getAttribute("hp").decrementModifiedScore(damage)
         target.setAttribute("hp", int(target.getAttribute("hp").getValue()) - damage)
-        print("actor " + str(attacker.getID()) + " rolled " + str(hitChance) + " to hit " +str(target.getID()) + " dealing " + str(damage) + " damage")
+        # print("actor " + str(attacker.getID()) + " rolled " + str(hitChance) + " to hit " +str(target.getID()) + " dealing " + str(damage) + " damage")
     return damage
 
 # returns number of bullets fired or 0 if out of ammo
