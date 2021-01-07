@@ -62,6 +62,7 @@ def main():
         newActor = Actor(randName,randomSex,randName[0],"plugins/apoc/statNames.csv")
         # randomize stats
         newActor.makeAllStatsRandom()
+        newActor.setAttribute("hp",5)
         # print(str(newActor.getID()))
         # newActor.printStats()
 
@@ -93,10 +94,10 @@ def main():
         # messagesOut.set(messagesOut.get() + "\nturn " + str(turnNum))
         # messagesOut.set("\nturn " + str(turnNum))
         # print("\nturn " + str(turnNum) + "\n")
+        startTime = time.time()
         print(gameMap.printMap())
         turnNum += 1
         loopCount = 0
-        startTime = time.time()
         for currActor in actorList:
             loopCount += 1
             # print("\t" + str((loopCount/len(actorList))*100) + "%")
@@ -135,8 +136,11 @@ def main():
                         # attackMessage += ", dealing " + str(attackResult) + " damage"
                         # messagesOut.set(messagesOut.get() + "\n" + attackMessage)
                         # messagesOut.set(messagesOut.get() + " dealing " + str(attackResult) + " damage")
-                        if(attackChoice.getAttribute("hp") == attackChoice.getAttribute("hp").min()):
+                        # print(attackChoice.getAttribute("hp").getValue())
+                        # print(attackChoice.getAttribute("hp").min())
+                        if(attackChoice.getAttribute("hp").getValue() < attackChoice.getAttribute("hp").min()):
                             gameMap.removeActor(attackChoice)
+                            print(attackChoice.getName() + "(" + str(attackChoice.getID()) + ")" + " has died!")
                             actorList.remove(attackChoice)
                             # messagesOut.set(messagesOut.get() + "\n" + str(attackChoice) + " has been killed by " + str(currActor))
                 else:
@@ -151,7 +155,9 @@ def main():
         # master.update()
         endTime = time.time()
         print("Took " + str(endTime - startTime) + " seconds to process turn " + str(turnNum))
-        # inputBuffer = input()
+        # for a in actorList:
+        #     print( a.getToken() + " HP: " + str(a.getAttribute("hp")))
+        inputBuffer = input()
 
 
 if __name__ == '__main__':

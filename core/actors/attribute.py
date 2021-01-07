@@ -7,7 +7,7 @@ class Attribute:
         self.stats["current"] = int(self.stats["min"])
 
     def getValue(self):
-        return self.stats["current"]
+        return int(self.stats["current"])
 
     def setStat(self, newValue):
         if(newValue < int(self.stats["min"])):
@@ -18,10 +18,10 @@ class Attribute:
             self.stats["current"] = newValue
 
     def min(self):
-        return self.stats["min"]
+        return int(self.stats["min"])
 
     def max(self):
-        return self.stats["max"]
+        return int(self.stats["max"])
 
     def getName(self):
         return self.stats["name"]
