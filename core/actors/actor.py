@@ -36,6 +36,7 @@ class Actor:
         statsDicts = csv.DictReader(open(statsFile))
 
         for s in statsDicts:
+            # print(Attribute(s))
             self.stats.append(Attribute(s))
 
     def __str__(self):
@@ -54,8 +55,10 @@ class Actor:
         return self.name
 
     def makeAllStatsRandom(self):
+        # print(self.name + "(" + str(self.getID()) + ")")
         for stat in self.stats:
-            stat.setStat(random.randint(int(stat.min()), int(stat.max())))
+            stat.setsm(random.randint(int(stat.min()), int(stat.max())))
+            # print(stat)
 
     def setName(self,newName):
         self.name = newName

@@ -49,7 +49,7 @@ def main():
         maleNameList.append(line)
     maleNameFile.close()
 
-    for i in range(0,50):
+    for i in range(0,100):
         randomSex = ""
         randomNamesList = []
         if(random.randint(0,1) == 0):
@@ -62,7 +62,8 @@ def main():
         newActor = Actor(randName,randomSex,randName[0],"plugins/apoc/statNames.csv")
         # randomize stats
         newActor.makeAllStatsRandom()
-        newActor.setAttribute("hp",5)
+        newActor.getAttribute("hp").setsm(5)
+        newActor.getAttribute("dodge").setsm(0)
         # print(str(newActor.getID()))
         # newActor.printStats()
 
@@ -132,13 +133,16 @@ def main():
                         # messagesOut.set(messagesOut.get() + " but misses!")
                         # attackMessage += ", but misses!"
                         # messagesOut.set(messagesOut.get() + "\n" + attackMessage)
+                        # print(currActor.getName() + "(" + str(currActor.getID()) + ") misses " + attackChoice.getName() + "(" + str(attackChoice.getID()) + ")(" + str(attackChoice.getAttribute("hp").getValue()) + "/" + str(attackChoice.getAttribute("hp").softmax()) + ")")
                     else:
+                        # print(currActor.getName() + "(" + str(currActor.getID()) + ") hits " + attackChoice.getName() + "(" + str(attackChoice.getID()) + ")")
+                        # print("   " + attackChoice.getName() + "(" + str(attackChoice.getID()) + ") took " + str(attackResult) + " damage! (" + str(attackChoice.getAttribute("hp").getValue()) + "/" + str(attackChoice.getAttribute("hp").softmax()) + ")")
                         # attackMessage += ", dealing " + str(attackResult) + " damage"
                         # messagesOut.set(messagesOut.get() + "\n" + attackMessage)
                         # messagesOut.set(messagesOut.get() + " dealing " + str(attackResult) + " damage")
                         # print(attackChoice.getAttribute("hp").getValue())
                         # print(attackChoice.getAttribute("hp").min())
-                        if(attackChoice.getAttribute("hp").getValue() < attackChoice.getAttribute("hp").min()):
+                        if(attackChoice.getAttribute("hp").getValue() == attackChoice.getAttribute("hp").min()):
                             gameMap.removeActor(attackChoice)
                             print(attackChoice.getName() + "(" + str(attackChoice.getID()) + ")" + " has died!")
                             actorList.remove(attackChoice)

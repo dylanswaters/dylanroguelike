@@ -1,5 +1,5 @@
 name,min,max
-hp,1,1000
+hp,0,1000
 dodge,0,100
 carryWeight,0,1000
 sightRange,1,50
@@ -7,6 +7,7 @@ sightRange,1,50
 strength,1,10
 endurance,1,10
 agility,1,10
+perception,1,10
 
 unarmed,0,100
 knives,0,100
