@@ -48,29 +48,11 @@ class Actor:
             print(stat)
             # print(stat.getName() + str(stat.getValue()))
 
-    def getID(self):
-        return self.id
-
-    def getName(self):
-        return self.name
-
     def makeAllStatsRandom(self):
         # print(self.name + "(" + str(self.getID()) + ")")
         for stat in self.stats:
             stat.setsm(random.randint(int(stat.min()), int(stat.max())))
             # print(stat)
-
-    def setName(self,newName):
-        self.name = newName
-
-    def setToken(self,newToken):
-        self.token = newToken
-
-    def getToken(self):
-        return self.token
-
-    def getWeapon(self):
-        return self.weaponSlot
 
     def equipWeaponByInvIndex(self,index):
         weaponToEquip = inventory.popItemByIndex(index)
@@ -94,9 +76,6 @@ class Actor:
             self.inventory.addItem(self.weaponSlot)
             self.weaponSlot = None
             return 1
-
-    def getarmor(self):
-        return self.armorSlot
 
     def equipArmorByInvIndex(self,index):
         armorToEquip = inventory.popItemByIndex(index)

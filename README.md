@@ -1,10 +1,10 @@
 # dylanroguelike
 
-######
-#----#
-#-@D-#
-#----#
-######
+.######
+.#----#
+.#-@D-#
+.#----#
+.######
 
 ## Goals:
 ### produce a python roguelike engine that can make it easier for me to produce various games

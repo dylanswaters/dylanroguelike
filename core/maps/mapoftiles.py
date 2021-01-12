@@ -20,8 +20,8 @@ class MapOfTiles(Map):
         mapLine = "\n"
         for y in range(start[1], end[1]):
             for x in range(start[0], end[0]):
-                if(self.getTile(x,y).getActor() != None):
-                    mapLine += self.getTile(x,y).getActor().getToken()
+                if(self.getTile(x,y).actorInTile != None):
+                    mapLine += self.getTile(x,y).actorInTile.getToken()
                 else:
                     mapLine += self.getTile(x,y).getToken()
             mapLine += "\n"
@@ -30,12 +30,12 @@ class MapOfTiles(Map):
 
     def printMap(self):
         mapLine = "\n"
-        for y in range(0, self.getHeight()):
-            for x in range(0, self.getWidth()):
-                if(self.getTile(x,y).getActor() != None):
-                    mapLine += self.getTile(x,y).getActor().getToken()
+        for y in range(0, self.maxHeight):
+            for x in range(0, self.maxWidth):
+                if(self.getTile(x,y).actorInTile != None):
+                    mapLine += self.getTile(x,y).actorInTile.token
                 else:
-                    mapLine += self.getTile(x,y).getToken()
+                    mapLine += self.getTile(x,y).token
             mapLine += "\n"
         return mapLine
 
@@ -45,15 +45,15 @@ class MapOfTiles(Map):
             # print(i)
             # print(self.maxWidth-1)
             # print(i)
-            self.getTile(self.maxWidth-1,i).setToken("#")
-            self.getTile(self.maxWidth-1,i).setBlocked(True)
-            self.getTile(0,i).setToken("#")
-            self.getTile(0,i).setBlocked(True)
+            self.getTile(self.maxWidth-1,i).token = "#"
+            self.getTile(self.maxWidth-1,i).blocked = True
+            self.getTile(0,i).token = "#"
+            self.getTile(0,i).blocked = True
         for i in range(0, self.maxWidth):
-            self.getTile(i,self.maxHeight-1).setToken("#")
-            self.getTile(i,self.maxHeight-1).setBlocked(True)
-            self.getTile(i,0).setToken("#")
-            self.getTile(i,0).setBlocked(True)
+            self.getTile(i,self.maxHeight-1).token = "#"
+            self.getTile(i,self.maxHeight-1).blocked = True
+            self.getTile(i,0).token = "#"
+            self.getTile(i,0).blocked = True
 
     # divides and conquers map to make rooms
     def makeRooms(self,nr):
@@ -96,15 +96,15 @@ class MapOfTiles(Map):
             xMaxBound = random.randint(room.getCenterX()+2,room.getXMax())
             # print("X room size:" + str(xMinBound) + "-" + str(xMaxBound))
             for i in range(yMinBound, yMaxBound):
-                self.tiles[xMaxBound-1][i].setToken("#")
-                self.tiles[xMaxBound-1][i].setBlocked(True)
-                self.tiles[xMinBound][i].setToken("#")
-                self.tiles[xMinBound][i].setBlocked(True)
+                self.tiles[xMaxBound-1][i].token = "#"
+                self.tiles[xMaxBound-1][i].blocked = True
+                self.tiles[xMinBound][i].token = "#"
+                self.tiles[xMinBound][i].blocked = True
             for j in range(xMinBound, xMaxBound):
-                self.tiles[j][yMaxBound-1].setToken("#")
-                self.tiles[j][yMaxBound-1].setBlocked(True)
-                self.tiles[j][yMinBound].setToken("#")
-                self.tiles[j][yMinBound].setBlocked(True)
+                self.tiles[j][yMaxBound-1].token = "#"
+                self.tiles[j][yMaxBound-1].blocked = True
+                self.tiles[j][yMinBound].token = "#"
+                self.tiles[j][yMinBound].blocked = True
 
 
     def getTile(self,x,y):
@@ -117,23 +117,23 @@ class MapOfTiles(Map):
 
     # return 1 if successful insert, 0 otherwise
     def insertActor(self, x, y, newActor):
-        if(self.getTile(x,y).getBlocked() == True):
+        if(self.getTile(x,y).blocked == True):
             return 0
         else:
             # print(str(y) + ":" + str(x))
-            self.getTile(x,y).setActor(newActor)
-            self.getTile(x,y).setBlocked(True)
+            self.getTile(x,y).actorInTile = newActor
+            self.getTile(x,y).blocked = True
             return 1
 
     def removeActor(self, actorToRemove):
         xy = self.getActorLocation(actorToRemove)
-        self.getTile(xy[0],xy[1]).setActor(None)
-        self.getTile(xy[0],xy[1]).setBlocked(False)
+        self.getTile(xy[0],xy[1]).actorInTile = None
+        self.getTile(xy[0],xy[1]).blocked = False
 
     def getDirectionToActor(self, baseActor, targetActor):
         xyb = self.getActorLocation(baseActor)
         xyt = self.getActorLocation(targetActor)
-        # print("base actor " + str(xyb))
+        # print("base actor" + str(xyb))
         # print("target actor " + str(xyt))
         if(xyb[0] > xyt[0] and xyb[1] < xyt[1]):
             return 1
@@ -158,8 +158,8 @@ class MapOfTiles(Map):
             for x in range(px-1, px + 1):
                 if(x < 0 or x > self.maxWidth - 1 or y < 0 or y > self.maxHeight - 1):
                     continue
-                elif(self.getTile(x,y).getActor() != None):
-                    if(self.getTile(x,y).getActor().getID() == target.getID()):
+                elif(self.getTile(x,y).actorInTile != None):
+                    if(self.getTile(x,y).actorInTile.getID() == target.getID()):
                         retVal = True
                         break
         return retVal
@@ -212,8 +212,8 @@ class MapOfTiles(Map):
                 # oob check
                 if(x < 0 or x > self.maxWidth - 1 or y < 0 or y > self.maxHeight - 1):
                     continue
-                elif(self.getTile(x,y).getActor() != None):
-                    foundActor = self.getTile(x,y).getActor()
+                elif(self.getTile(x,y).actorInTile != None):
+                    foundActor = self.getTile(x,y).actorInTile
                     # check to make sure it isn't the player
                     if(actorLooking == foundActor):
                         continue
@@ -278,7 +278,7 @@ class MapOfTiles(Map):
                     break
                 # check for blocked
                 else:
-                    if(self.getTile(round(lookingAt[0]), round(lookingAt[1])).getBlocked() == True):
+                    if(self.getTile(round(lookingAt[0]), round(lookingAt[1])).blocked == True):
                         # print("blocked at: [" + str(int(lookingAt[0])) + ", " + str(int(lookingAt[1])) + "]")
                         break
                     else:
@@ -289,9 +289,9 @@ class MapOfTiles(Map):
     def getActorLocation(self, actorToFind):
         for x in range(0, self.maxWidth):
             for y in range(0, self.maxHeight):
-                if(self.getTile(x,y).getActor() == actorToFind):
+                if(self.getTile(x,y).actorInTile == actorToFind):
                     return [x,y]
-        return -1
+        return [-1,-1]
 
     # returns the closest actor in a list compared to a base
     def getClosestActor(self, baseActor, listOfActors):
@@ -355,15 +355,15 @@ class MapOfTiles(Map):
         if(direction == 9):
             newX = xy[0]+1
             newY = xy[1]-1
-        if((newY < self.getHeight() and newY > 0) and (newX < self.getWidth() and newX > 0)):
+        if((newY < self.maxHeight and newY > 0) and (newX < self.maxWidth and newX > 0)):
             # print(str(newX) + "," + str(newY))
             newTile = self.getTile(newX, newY)
-            # print(newTile.getBlocked())
-            if(newTile.getBlocked() == False):
-                newTile.setActor(tileOfMovingActor.getActor())
-                newTile.setBlocked(True)
-                tileOfMovingActor.setActor(None)
-                tileOfMovingActor.setBlocked(False)
+            # print(newTile.blocked)
+            if(newTile.blocked == False):
+                newTile.actorInTile = tileOfMovingActor.actorInTile
+                newTile.blocked = True
+                tileOfMovingActor.actorInTile = None
+                tileOfMovingActor.blocked = False
                 return 1
             else:
                 return 0
@@ -373,5 +373,5 @@ class MapOfTiles(Map):
     def removeAllActors(self):
         for x in range(0, self.maxWidth):
             for y in range(0, self.maxHeight):
-                if(self.getTile(x,y).getActor() != None):
-                    self.removeActor( self.getTile(x,y).getActor() )
+                if(self.getTile(x,y).actorInTile != None):
+                    self.removeActor( self.getTile(x,y).actorInTile )

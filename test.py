@@ -13,10 +13,10 @@ def test1():
     newActor2 = Actor("test","male","@","text/empty.txt")
     if(gameMap.insertActor(5, 5, newActor2) == 1):
         return "test 1 failed: allowed insert on tile where another actor already is"
-    if(gameMap.getTile(5,5).getActor() == newActor2):
+    if(gameMap.getTile(5,5).actorInTile == newActor2):
         return "test 1 failed: incorrect actor in tile"
     gameMap.removeActor(newActor)
-    if(gameMap.getTile(5,5).getActor() == newActor):
+    if(gameMap.getTile(5,5).actorInTile == newActor):
         return "test 1 failed: incorrect actor in tile"
     gameMap.removeAllActors()
     del gameMap
@@ -37,17 +37,17 @@ def test2():
     gameMap.insertActor(2, 2, Actor("test","male","@","text/empty.txt"))
     gameMap.insertActor(8, 8, Actor("test","male","@","text/empty.txt"))
     # print(gameMap.printMap())
-    # v = gameMap.getVisibleActors(gameMap.getTile(2,2).getActor(),10)
+    # v = gameMap.getVisibleActors(gameMap.getTile(2,2).actorInTile,10)
     # for i in v:
     #     print(gameMap.getActorLocation(i))
-    # print(len(gameMap.getVisibleActors(gameMap.getTile(2,2).getActor(),5)))
-    # print(len(gameMap.getVisibleActors(gameMap.getTile(2,5).getActor(),5)))
-    # print(len(gameMap.getVisibleActors(gameMap.getTile(2,8).getActor(),5)))
-    # print(len(gameMap.getVisibleActors(gameMap.getTile(5,2).getActor(),5)))
-    # print(len(gameMap.getVisibleActors(gameMap.getTile(5,8).getActor(),5)))
-    # print(len(gameMap.getVisibleActors(gameMap.getTile(8,2).getActor(),5)))
-    # print(len(gameMap.getVisibleActors(gameMap.getTile(8,5).getActor(),5)))
-    # print(len(gameMap.getVisibleActors(gameMap.getTile(8,8).getActor(),5)))
+    # print(len(gameMap.getVisibleActors(gameMap.getTile(2,2).actorInTile,5)))
+    # print(len(gameMap.getVisibleActors(gameMap.getTile(2,5).actorInTile,5)))
+    # print(len(gameMap.getVisibleActors(gameMap.getTile(2,8).actorInTile,5)))
+    # print(len(gameMap.getVisibleActors(gameMap.getTile(5,2).actorInTile,5)))
+    # print(len(gameMap.getVisibleActors(gameMap.getTile(5,8).actorInTile,5)))
+    # print(len(gameMap.getVisibleActors(gameMap.getTile(8,2).actorInTile,5)))
+    # print(len(gameMap.getVisibleActors(gameMap.getTile(8,5).actorInTile,5)))
+    # print(len(gameMap.getVisibleActors(gameMap.getTile(8,8).actorInTile,5)))
     if(len(gameMap.getVisibleActors(newActor,10)) != 8):
         return "test 2 failed: saw " + str(len(gameMap.getVisibleActors(newActor,10))) + " instead of 8"
     gameMap.removeAllActors()

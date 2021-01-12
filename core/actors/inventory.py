@@ -8,9 +8,6 @@ class Inventory:
         self.items = []
         self.weight = 0
 
-    def getWeight(self):
-        return self.weight
-
     def addItem(self,newItem):
         self.items.append(newItem)
         self.weight += newItem.getStat("weight")

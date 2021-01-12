@@ -60,10 +60,10 @@ def main():
         newActor = Actor(randName,randomSex,randName[0],"plugins/apoc/statNames.csv")
         # randomize stats
         newActor.makeAllStatsRandom()
-        print(str(newActor.getID()))
+        print(str(newActor.id))
         newActor.printStats()
 
-        newActor.setToken(str(newActor.getID()))
+        newActor.token = str(newActor.id)
         weaponToEquip = Item(itemDicts[random.randint(0,len(itemDicts)-1)])
         # randWepIndex = random.randint(0,len(weaponList)-1)
         # wepLine = weaponList[randWepIndex]
@@ -75,8 +75,8 @@ def main():
         randX = 0
         randY = 0
         while(gameMap.insertActor(randX, randY, newActor) == 0):
-            randX = random.randint(1,gameMap.getWidth()-1)
-            randY = random.randint(1,gameMap.getHeight()-1)
+            randX = random.randint(1,gameMap.maxWidth-1)
+            randY = random.randint(1,gameMap.maxHeight-1)
         actorList.append(newActor)
         # gameMap.insertActor(randY, randX, Actor())
 
@@ -103,27 +103,27 @@ def main():
             # print(str(currActor) + " takes their turn")
             visibleActors = gameMap.getVisibleActors(currActor, 30)
             # print(len(visibleActors))
-            print(str(currActor.getID()) + " can see ")
+            print(str(currActor.id) + " can see ")
             for printActor in visibleActors:
-                print("    " + str(printActor.getID()))
+                print("    " + str(printActor.id))
             if(len(visibleActors) > 0):
                 attackChoice = gameMap.getClosestActor(currActor, visibleActors)
-                print(" and chooses " + str(attackChoice.getID()) + " as their target")
+                print(" and chooses " + str(attackChoice.id) + " as their target")
 
                 wepRange = 1
-                attackMessage = str(currActor.getID()) + ":" + str(currActor.getName())
-                if(currActor.getWeapon() != None):
-                    if(currActor.getWeapon().getStat("itemType") == "meleeWeapon"):
+                attackMessage = str(currActor.id) + ":" + str(currActor.name)
+                if(currActor.weaponSlot != None):
+                    if(currActor.weaponSlot.getStat("itemType") == "meleeWeapon"):
                         attackMessage += " attempts to strike "
-                    if(currActor.getWeapon().getStat("itemType") == "rangedWeapon"):
-                        wepRange = int(currActor.getWeapon().getStat("range"))
+                    if(currActor.weaponSlot.getStat("itemType") == "rangedWeapon"):
+                        wepRange = int(currActor.weaponSlot.getStat("range"))
                         attackMessage += " fires at "
                 else:
                     attackMessage += " attempts to punch "
-                attackMessage += str(attackChoice.getID()) + ":" + str(attackChoice.getName())
+                attackMessage += str(attackChoice.id) + ":" + str(attackChoice.name)
 
                 if(gameMap.isActorInRangeOfActor(currActor,attackChoice,wepRange) == True):
-                    # messagesOut.set(messagesOut.get() + "\n" + str(currActor.getID()) + ":" + str(currActor.getName()) + " attempts to punch " + str(attackChoice.getID()) + ":" + str(attackChoice.getName()))
+                    # messagesOut.set(messagesOut.get() + "\n" + str(currActor.id) + ":" + str(currActor.name) + " attempts to punch " + str(attackChoice.id) + ":" + str(attackChoice.name))
                     attackResult = attackActor(currActor, attackChoice)
                     if(attackResult == -1):
                         # messagesOut.set(messagesOut.get() + " but misses!")
@@ -138,7 +138,7 @@ def main():
                             actorList.remove(attackChoice)
                             messagesOut.set(messagesOut.get() + "\n" + str(attackChoice) + " has been killed by " + str(currActor))
                 else:
-                    print(str(currActor.getID()) + ":" + str(currActor.getName()) + " attempts to move towards " + str(attackChoice.getID()) + ":" + str(attackChoice.getName()) + " in direction " + str(gameMap.getDirectionToActor(currActor, attackChoice)))
+                    print(str(currActor.id) + ":" + str(currActor.name) + " attempts to move towards " + str(attackChoice.id) + ":" + str(attackChoice.name) + " in direction " + str(gameMap.getDirectionToActor(currActor, attackChoice)))
                     gameMap.moveActor(currActor,gameMap.getDirectionToActor(currActor, attackChoice))
             else:
                 randDir = random.randint(1,9)

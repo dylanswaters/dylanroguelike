@@ -15,10 +15,10 @@ def key(event):
 def main():
     global inputBuffer
     gameLength = 50
-    gameHeight = 25
+    gameHeight = 15
     gameRooms = 1
     gameMap = MapOfTiles(gameLength, gameHeight)
-    print("made map")
+    print("made map: " + str(gameLength) + "x" + str(gameHeight))
     # gameMap.makeRooms(gameRooms)
     gameMap.blockEdges()
     actorList = []
@@ -49,7 +49,9 @@ def main():
         maleNameList.append(line)
     maleNameFile.close()
 
-    for i in range(0,100):
+    totalActors = 250
+
+    for i in range(0,totalActors):
         randomSex = ""
         randomNamesList = []
         if(random.randint(0,1) == 0):
@@ -79,9 +81,10 @@ def main():
         randX = 0
         randY = 0
         while(gameMap.insertActor(randX, randY, newActor) == 0):
-            randX = random.randint(1,gameMap.getWidth()-1)
-            randY = random.randint(1,gameMap.getHeight()-1)
+            randX = random.randint(1,gameMap.maxWidth-1)
+            randY = random.randint(1,gameMap.maxHeight-1)
         actorList.append(newActor)
+        # print("insert at " + str(randX) + "," + str(randY))
         # gameMap.insertActor(randY, randX, Actor())
 
     print("made actors")
@@ -99,8 +102,10 @@ def main():
         print(gameMap.printMap())
         turnNum += 1
         loopCount = 0
+        preturnActorCount = len(actorList)
         for currActor in actorList:
             loopCount += 1
+            print(str(currActor.id) + ":" + str(loopCount) + "/" + str(len(actorList)) + " | " + str((loopCount/len(actorList)) * 100) + "%" )
             # print("\t" + str((loopCount/len(actorList))*100) + "%")
             # print("\t" + str((loopCount/len(actorList))*100) + "% complete (" + str(loopCount) + "/" + str(len(actorList)) + ")")
             # print(str(currActor) + " takes their turn")
@@ -115,11 +120,11 @@ def main():
 
                 wepRange = 1
                 # attackMessage = str(currActor.getID()) + ":" + str(currActor.getName())
-                if(currActor.getWeapon() != None):
-                    # if(currActor.getWeapon().getStat("itemType") == "meleeWeapon"):
+                if(currActor.weaponSlot != None):
+                    # if(currActor.weaponSlot.getStat("itemType") == "meleeWeapon"):
                         # attackMessage += " attempts to strike "
-                    if(currActor.getWeapon().getStat("itemType") == "rangedWeapon"):
-                        wepRange = int(currActor.getWeapon().getStat("range"))
+                    if(currActor.weaponSlot.getStat("itemType") == "rangedWeapon"):
+                        wepRange = int(currActor.weaponSlot.getStat("range"))
                         # attackMessage += " fires at "
                 # else:
                     # attackMessage += " attempts to punch "
@@ -144,7 +149,9 @@ def main():
                         # print(attackChoice.getAttribute("hp").min())
                         if(attackChoice.getAttribute("hp").getValue() == attackChoice.getAttribute("hp").min()):
                             gameMap.removeActor(attackChoice)
-                            print(attackChoice.getName() + "(" + str(attackChoice.getID()) + ")" + " has died!")
+                            # print("deaths:")
+                            # print(loopCount)
+                            print(attackChoice.name + "(" + str(attackChoice.id) + ")" + " has died!")
                             actorList.remove(attackChoice)
                             # messagesOut.set(messagesOut.get() + "\n" + str(attackChoice) + " has been killed by " + str(currActor))
                 else:
@@ -159,6 +166,7 @@ def main():
         # master.update()
         endTime = time.time()
         print("Took " + str(endTime - startTime) + " seconds to process turn " + str(turnNum))
+        print(str(preturnActorCount - len(actorList)) + " characters died!")
         # for a in actorList:
         #     print( a.getToken() + " HP: " + str(a.getAttribute("hp")))
         inputBuffer = input()
